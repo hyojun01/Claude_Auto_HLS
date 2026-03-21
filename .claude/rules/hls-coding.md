@@ -1,0 +1,152 @@
+# HLS C++ Coding Standards
+
+## Synthesizability Rules (MUST follow)
+
+### Forbidden Constructs
+- `new`, `delete`, `malloc`, `free` — no dynamic memory allocation
+- `std::vector`, `std::list`, `std::map` — no dynamically-sized STL containers
+- `std::string` — not synthesizable
+- Unbounded recursion — only bounded recursion with known depth
+- Virtual functions, RTTI (`dynamic_cast`, `typeid`)
+- System calls (`printf`, `fprintf`, `exit`) — allowed in testbench only
+- File I/O — testbench only
+- Exception handling (`try`/`catch`/`throw`)
+- Global variables shared across top-level function calls (use `static` local instead)
+
+### Allowed Constructs
+- Fixed-size arrays: `int arr[256];`
+- `static` local variables (for persistent state across function calls)
+- Template functions and classes
+- `struct` and `class` (no virtual methods)
+- `enum` and `enum class`
+- `constexpr` constants
+- Bounded `for` loops with compile-time-determinable or `ap_uint` bounds
+- `hls::stream<T>` for FIFOs
+
+## Type Guidelines
+
+### Integer Types
+```cpp
+// Prefer Vitis HLS arbitrary-precision types over native C++ types
+ap_uint<8>  pixel;       // 8-bit unsigned
+ap_int<16>  sample;      // 16-bit signed
+ap_uint<1>  flag;        // Single bit
+ap_uint<48> timestamp;   // Custom width
+
+// Use native types only when exact width doesn't matter for synthesis
+int loop_counter;         // OK for loop variables
+```
+
+### Fixed-Point Types
+```cpp
+ap_fixed<16, 1>   coeff;     // Q1.15 format (1 integer bit, 15 fractional)
+ap_ufixed<8, 0>   norm_val;  // 0.8 unsigned fractional
+ap_fixed<32, 16>  accum;     // Accumulator with headroom
+
+// Always specify quantization and overflow modes for critical paths
+ap_fixed<16, 1, AP_RND, AP_SAT> safe_val;
+```
+
+### Struct Types
+```cpp
+struct pixel_t {
+    ap_uint<8> r;
+    ap_uint<8> g;
+    ap_uint<8> b;
+};
+
+// For AXI-Stream, use ap_axiu or custom struct with TLAST
+struct axis_word {
+    ap_uint<32> data;
+    ap_uint<1>  last;
+};
+```
+
+## Code Structure
+
+### Header File (.hpp)
+```cpp
+#ifndef IP_NAME_HPP
+#define IP_NAME_HPP
+
+// 1. Vitis HLS includes
+#include <ap_int.h>
+#include <ap_fixed.h>
+#include <hls_stream.h>
+// Add others as needed: ap_axi_sdata.h, hls_math.h, etc.
+
+// 2. Constants
+const int BUFFER_SIZE = 256;
+const int NUM_TAPS = 16;
+
+// 3. Type definitions
+typedef ap_uint<8> data_t;
+typedef ap_fixed<16, 1> coeff_t;
+typedef ap_fixed<32, 16> acc_t;
+
+// 4. Top function prototype
+void ip_name(/* parameters */);
+
+#endif
+```
+
+### Source File (.cpp)
+```cpp
+#include "ip_name.hpp"
+
+// 1. Helper functions (if any)
+static void helper_func(/* params */) {
+    // ...
+}
+
+// 2. Top-level function
+void ip_name(/* parameters */) {
+    // 2a. Interface pragmas (always first)
+    #pragma HLS INTERFACE ...
+
+    // 2b. Local variable declarations
+    // ...
+
+    // 2c. Implementation with labeled loops
+    MAIN_LOOP:
+    for (int i = 0; i < N; i++) {
+        #pragma HLS PIPELINE II=1
+        // ...
+    }
+}
+```
+
+## Pragma Placement Rules
+- Interface pragmas: immediately inside the top function, before any logic
+- Loop pragmas: immediately after the loop header (inside the loop body)
+- Array pragmas: immediately after the array declaration
+- Function pragmas (INLINE, DATAFLOW): first line inside the function body
+
+## Loop Labeling
+- **Always** label loops with uppercase descriptive names
+- Labels help identify loops in synthesis reports
+```cpp
+READ_LOOP:
+for (int i = 0; i < N; i++) { ... }
+
+PROCESS_LOOP:
+for (int i = 0; i < N; i++) { ... }
+
+WRITE_LOOP:
+for (int i = 0; i < N; i++) { ... }
+```
+
+## Comments
+- Comment every interface pragma explaining the protocol choice
+- Comment non-obvious bit manipulations or type conversions
+- Comment pipeline stages and their purpose
+- Comment static variables explaining their persistence semantics
+- Do NOT comment obvious code (`i++; // increment i`)
+
+## Testbench Standards
+- Testbenches are NOT synthesized — full C++ is allowed
+- `printf` / `std::cout` for logging
+- File I/O for test vectors
+- STL containers for reference models
+- Must return 0 on success, non-zero on failure
+- Must print clear PASS/FAIL per test case
