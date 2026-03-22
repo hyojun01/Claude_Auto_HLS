@@ -79,3 +79,15 @@ Entries are append-only. Never delete or modify existing entries.
 - **Approved by**: User
 - **Backup**: `.claude/upgrades/backups/hls-coding.md_20260322_*.bak`
 - **Rollback**: Remove the "BIND_OP impl=fabric latency=N" bullet from "### Common Pitfalls" in `.claude/rules/hls-coding.md`
+
+## [UPG-0006] Add ap_axiu internal stream restriction pitfall — 2026-03-22
+- **Status**: Applied
+- **Trigger**: During `window` design, C-synthesis failed with HLS 214-208 because internal DATAFLOW streams used `hls::stream<ap_axiu<32,0,0,0>>`. Vitis HLS 2025.1 requires `ap_axiu` types only on top-level AXI-Stream ports.
+- **Target**: `.claude/rules/hls-coding.md`
+- **Category**: Rule refinement
+- **Priority**: HIGH
+- **Session**: window / design-ip
+- **Summary**: Added `ap_axiu` / `hls::axis` internal stream restriction to "### Common Pitfalls" with BAD/GOOD examples and the rule to use plain types for inter-stage communication.
+- **Approved by**: User
+- **Backup**: `.claude/upgrades/backups/hls-coding.md_20260322_window.bak`
+- **Rollback**: Remove the "`ap_axiu` / `hls::axis` types are restricted to top-level AXI-Stream ports" bullet from "### Common Pitfalls" in `.claude/rules/hls-coding.md`

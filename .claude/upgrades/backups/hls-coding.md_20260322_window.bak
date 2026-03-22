@@ -27,11 +27,6 @@
   - BAD:  `#pragma HLS BIND_OP variable=result op=mul impl=fabric latency=3`  (60-bit multiply: 13.3 ns combo delay, timing violation)
   - GOOD: `#pragma HLS BIND_OP variable=result op=mul impl=dsp latency=3`  (DSP handles pipelining internally)
   - GOOD: Narrow operands to fit 1 DSP, then keep `impl=dsp` (see optimization skill, pattern #8)
-- **`ap_axiu` / `hls::axis` types are restricted to top-level AXI-Stream ports**: Vitis HLS (2025.1+) rejects `ap_axiu`, `ap_axis`, `qdma_axis`, and `hls::axis` data types on any `hls::stream` that is not a top-level function port with `#pragma HLS INTERFACE axis`. Internal DATAFLOW inter-stage streams must use a plain data type (e.g., `ap_uint<N>` or a custom `struct`).
-  - **Rule**: Never use `ap_axiu` or `hls::axis` for internal `hls::stream` variables. Use plain types for inter-stage communication and convert to/from `ap_axiu` only at the port-facing read/write stages.
-  - BAD:  `hls::stream<ap_axiu<32,0,0,0>> internal_buf;`  (synthesis error HLS 214-208)
-  - GOOD: `hls::stream<ap_uint<32>> internal_buf;`  (plain data type for internal FIFO)
-  - GOOD: `hls::stream<my_struct_t> internal_buf;`  (custom struct with data + sideband fields)
 
 ### Allowed Constructs
 - Fixed-size arrays: `int arr[256];`
