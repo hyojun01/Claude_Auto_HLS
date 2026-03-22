@@ -31,3 +31,15 @@ Entries are append-only. Never delete or modify existing entries.
 - **Approved by**: User
 - **Backup**: `.claude/upgrades/backups/hls-optimization.md_20260321_*.bak`
 - **Rollback**: Remove section "### 6. Excessive DSP Usage from Wide Casts in MAC Loops" from `.claude/skills/hls-optimization.md`
+
+## [UPG-0002] Add ap_fixed boundary value overflow pitfall — 2026-03-22
+- **Status**: Applied
+- **Trigger**: During `fft` design, `tw_real[0] = 1.0` silently wrapped to `-1.0` in `ap_fixed<16,1>` due to default `AP_WRAP` overflow mode, inverting all stage-0 butterfly outputs. Bug was only caught by C-simulation.
+- **Target**: `.claude/rules/hls-coding.md`
+- **Category**: Rule refinement
+- **Priority**: HIGH
+- **Session**: fft / design-ip
+- **Summary**: Added "### Common Pitfalls" section to HLS coding standards with rules for `ap_fixed` boundary value initialization, clamping, and `AP_SAT` usage.
+- **Approved by**: User
+- **Backup**: `.claude/upgrades/backups/hls-coding.md_20260322_*.bak`
+- **Rollback**: Remove "### Common Pitfalls" section (between "Forbidden Constructs" and "Allowed Constructs") from `.claude/rules/hls-coding.md`

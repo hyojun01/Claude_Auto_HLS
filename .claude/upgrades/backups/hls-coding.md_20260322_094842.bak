@@ -13,15 +13,6 @@
 - Exception handling (`try`/`catch`/`throw`)
 - Global variables shared across top-level function calls (use `static` local instead)
 
-### Common Pitfalls
-- **`ap_fixed` boundary value overflow**: Assigning a value at the exact boundary of an `ap_fixed` type's range silently wraps under the default `AP_WRAP` overflow mode. For example, `ap_fixed<16,1>` (Q1.15) has a maximum positive value of `1 - 2^-15 = 0.9999694824`, NOT `1.0`. Assigning `1.0` silently wraps to `-1.0`.
-  - **Rule**: Never initialize `ap_fixed` variables with values at or beyond the type's representable maximum. For `ap_fixed<W, I>`, the positive limit is `2^(I-1) - 2^(I-W)`.
-  - **Rule**: For ROM tables containing mathematically exact boundary values (e.g., cos(0) = 1.0, sin(pi/2) = 1.0), always clamp to the representable maximum.
-  - **Rule**: For critical-path fixed-point types where boundary values are possible, use `AP_SAT` overflow mode: `ap_fixed<16, 1, AP_RND, AP_SAT>`.
-  - BAD:  `ap_fixed<16,1> tw = 1.0;`  (silently becomes -1.0)
-  - GOOD: `ap_fixed<16,1> tw = 0.9999694824;`  (max representable positive value)
-  - GOOD: `ap_fixed<16,1,AP_RND,AP_SAT> tw = 1.0;`  (saturates to +0.9999694824)
-
 ### Allowed Constructs
 - Fixed-size arrays: `int arr[256];`
 - `static` local variables (for persistent state across function calls)
