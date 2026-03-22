@@ -186,3 +186,34 @@ csynth_design
 close_project
 exit
 ```
+
+## Report Parser Tool
+
+A Python script at `scripts/parse_hls_report.py` provides structured report parsing from `csynth.xml`.
+
+### Subcommands
+
+| Subcommand | Purpose | Input | Output |
+|------------|---------|-------|--------|
+| `parse`    | Extract all metrics from a csynth.xml | One XML path | JSON with design, timing, latency, resources, interfaces |
+| `compare`  | Diff two reports (before/after) | Two XML paths | JSON with deltas, speedups, resource changes |
+| `check`    | Flag anomalies | One XML path + thresholds | JSON with categorized warnings/errors |
+
+### Key JSON Fields for Agents
+
+| Agent Need | JSON Path |
+|-----------|-----------|
+| Timing met? | `timing.met` |
+| Clock slack | `timing.slack_ns` |
+| Worst-case latency | `latency.worst_cycles` |
+| Pipeline II per loop | `loops[N].pipeline_ii` |
+| LUT utilization | `resources.lut.util_pct` |
+| DSP utilization | `resources.dsp.util_pct` |
+| Port protocol | `interfaces[N].protocol` |
+| Design style | `latency.pipeline_type` |
+
+### Handling Special Cases
+
+- **Streaming designs**: latency values may be `null` (from XML `"undef"`) — this is expected for auto-rewinding loop pipelines with unbounded trip count
+- **Dataflow designs**: `latency.dataflow_throughput_cycles` contains the pipeline throughput in cycles; `loops` array may be empty at top level
+- **Resource zero-available**: URAM on parts without URAM reports `available: 0` and `util_pct: 0.0`

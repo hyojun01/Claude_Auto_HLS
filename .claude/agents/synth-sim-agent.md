@@ -208,7 +208,44 @@ exit
 
 ## Report Analysis
 
-After synthesis, extract and report these metrics from the synthesis summary:
+After synthesis, use the report parser to extract structured metrics.
+
+### Using the Report Parser
+
+The report parser script at `scripts/parse_hls_report.py` extracts synthesis metrics from `csynth.xml` and outputs structured JSON.
+
+**Parse a single report:**
+```bash
+python3 scripts/parse_hls_report.py parse src/<ip_name>/proj_<ip_name>/sol1/syn/report/csynth.xml
+```
+
+**Compare baseline vs optimized:**
+```bash
+python3 scripts/parse_hls_report.py compare \
+  src/<ip_name>/proj_<ip_name>/sol1/syn/report/csynth.xml \
+  src/<ip_name>/proj_<ip_name>/sol_opt/syn/report/csynth.xml
+```
+
+**Check for anomalies (timing violations, resource overutilization, missed II):**
+```bash
+python3 scripts/parse_hls_report.py check \
+  src/<ip_name>/proj_<ip_name>/sol1/syn/report/csynth.xml \
+  --target-ii 1 --max-util 80
+```
+
+### Metrics to Report
+
+Extract and report the following from the parser's JSON output:
+- **Clock**: `timing.target_ns`, `timing.estimated_ns`, `timing.slack_ns`, `timing.met`
+- **Latency**: `latency.best_cycles`, `latency.worst_cycles`, `latency.best_time`, `latency.worst_time`
+- **Initiation Interval**: `latency.interval_min`, `latency.interval_max`; per-loop: `loops[].pipeline_ii`
+- **Resources**: `resources.{bram,dsp,ff,lut,uram}.{used,available,util_pct}`
+- **Interfaces**: `interfaces[].{name,protocol,direction,data_width}`
+- **Anomalies**: run `check` subcommand and report any errors or warnings
+
+### Manual Fallback
+
+If the parser is not available or the XML format is unrecognized, extract these metrics manually from the synthesis summary report (`.rpt` file in `reports/`):
 - **Clock**: Target period, estimated period, uncertainty
 - **Latency**: Min/max latency in cycles and absolute time
 - **Initiation Interval (II)**: Min/max II
