@@ -4,9 +4,29 @@ An automated environment for FPGA IP design, verification, and optimization usin
 
 ## Quick Start
 
-### 1. Design a New IP
+### Option A: Spec-Driven Workflow (Recommended)
 
-Create a folder for your IP and add the specification:
+Let the Spec Generator agent create a complete, HLS-ready specification for you:
+
+```
+/generate-spec dsp nco
+```
+
+Review the proposal in `mailbox/queue/nco/`, approve it, then in a new session:
+
+```
+/design-ip nco
+```
+
+After design completes, review results:
+
+```
+/review-results nco
+```
+
+### Option B: Manual Specification
+
+Create a folder for your IP and write the specification yourself:
 
 ```bash
 mkdir -p src/my_filter/
@@ -21,7 +41,7 @@ Edit `src/my_filter/instruction.md` with your IP's requirements (I/O ports, data
 
 Claude Code will design the IP, write testbenches, run simulation and synthesis, and generate documentation automatically.
 
-### 2. Optimize an Existing IP
+### Optimize an Existing IP
 
 Add an optimization instruction document:
 
@@ -48,27 +68,36 @@ Claude Code will apply HLS optimizations, re-verify correctness, and update docu
 │   │   ├── synth-sim-agent.md# Synthesis & simulation (TB + TCL)
 │   │   ├── optimization-agent.md # Optimization (pragmas)
 │   │   ├── docs-agent.md     # Documentation generation
-│   │   └── upgrade-agent.md  # Environment self-improvement
+│   │   ├── upgrade-agent.md  # Environment self-improvement
+│   │   └── spec-generator-agent.md # IP spec generation (domain expert)
 │   ├── commands/
 │   │   ├── design-ip.md      # /design-ip command
 │   │   ├── optimize-ip.md    # /optimize-ip command
+│   │   ├── generate-spec.md  # /generate-spec command
+│   │   ├── review-results.md # /review-results command
 │   │   └── upgrade-env.md    # /upgrade-env command
 │   ├── skills/               # Domain knowledge
 │   │   ├── hls-design.md     # HLS design patterns
 │   │   ├── hls-synth-sim.md  # Synthesis & simulation reference
 │   │   ├── hls-optimization.md # Optimization techniques
-│   │   └── ip-documentation.md # Documentation standards
+│   │   ├── ip-documentation.md # Documentation standards
+│   │   └── domain-catalog.md # FPGA application domain catalog
 │   ├── rules/
-│       ├── general.md        # Project rules
-│       ├── hls-coding.md     # HLS C++ coding standards
-│       └── upgrade-governance.md # Environment upgrade rules
+│   │   ├── general.md        # Project rules
+│   │   ├── hls-coding.md     # HLS C++ coding standards
+│   │   └── upgrade-governance.md # Environment upgrade rules
 │   └── upgrades/
 │       ├── upgrade-log.md    # Complete upgrade history
 │       └── backups/          # Pre-upgrade file backups
 ├── src/                      # IP source repositories
 │   └── .template/            # Templates for new IPs
+├── mailbox/                  # Two-session communication protocol
+│   ├── queue/                # Proposed specs awaiting user approval
+│   ├── approved/             # User-approved specs for design
+│   ├── results/              # Build results from design sessions
+│   └── feedback/             # Spec agent review feedback
 ├── docs/                     # Generated IP documentation
-└── scripts/templates/        # TCL & C++ boilerplate templates
+└── scripts/templates/        # TCL, C++, and mailbox templates
 ```
 
 ## Agents
@@ -76,6 +105,7 @@ Claude Code will apply HLS optimizations, re-verify correctness, and update docu
 | Agent | Role | Responsibility |
 |-------|------|---------------|
 | **Main Agent** | Senior FPGA/HLS Lead | Plans, orchestrates, validates, triggers upgrades |
+| **Spec Generator Agent** | Domain Expert | Generates HLS-ready IP specs from domain knowledge |
 | **Design Agent** | HLS Design Engineer | Implements IP in C++ |
 | **Synth-Sim Agent** | HLS Verification Engineer | Testbenches, C-sim, synthesis |
 | **Optimization Agent** | HLS Optimization Engineer | Pragmas, code restructuring |
@@ -86,8 +116,51 @@ Claude Code will apply HLS optimizations, re-verify correctness, and update docu
 
 | Command | Description |
 |---------|-------------|
+| `/generate-spec <domain> [ip]` | Generate an IP specification from a domain catalog (DSP, comm, radar, image, DL) |
 | `/design-ip <name>` | Full IP design pipeline (design → sim → synth → docs) |
 | `/optimize-ip <name>` | Optimization pipeline (optimize → re-verify → update docs) |
+| `/review-results <name>` | Review build results and generate feedback or optimization proposals |
+
+## Two-Session Workflow (Mailbox Protocol)
+
+The environment supports a **two-session pipeline** for spec-driven IP development:
+
+```
+Session A (Spec Generator)          Session B (Design/Optimize)
+┌─────────────────────────┐         ┌─────────────────────────┐
+│ /generate-spec dsp nco  │         │ /design-ip nco          │
+│   → proposal + draft    │         │   → design, sim, synth  │
+│   → mailbox/queue/nco/  │         │   → mailbox/results/nco/│
+│                         │         │                         │
+│ User approves →         │         │                         │
+│   mailbox/approved/nco/ │────────>│ Reads approved spec     │
+│                         │         │                         │
+│ /review-results nco     │<────────│ Writes results          │
+│   → feedback + opt plan │         │                         │
+│                         │         │ /optimize-ip nco        │
+│ User approves opt →     │────────>│   → optimize, re-verify │
+└─────────────────────────┘         └─────────────────────────┘
+```
+
+The `mailbox/` directory mediates communication between sessions:
+- **`queue/`** — Spec Generator writes proposals and draft specs here
+- **`approved/`** — User copies approved specs here for Session B to consume
+- **`results/`** — Session B writes synthesis results and status here
+- **`feedback/`** — Spec Generator writes design review feedback here
+
+## Supported Domains
+
+The Spec Generator agent covers five FPGA application domains:
+
+| Domain | Key | Example IPs |
+|--------|-----|-------------|
+| Digital Signal Processing | `dsp` | FIR, IIR, FFT, CORDIC, NCO, CIC |
+| Communications | `comm` | QAM mod/demod, OFDM, Viterbi, LDPC, CRC |
+| Radar Signal Processing | `radar` | Pulse compressor, MTI, CFAR, beamformer |
+| Image Processing | `image` | 2D convolution, Sobel, median filter, resize |
+| Deep Learning Accelerator | `dl` | MAC array, ReLU, max pooling, softmax |
+
+See `.claude/skills/domain-catalog.md` for the full catalog with data type guidelines.
 
 ## Instruction Document Format
 
