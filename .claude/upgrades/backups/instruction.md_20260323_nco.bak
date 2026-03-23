@@ -27,21 +27,6 @@
 | Target II | (optional) |
 | Target Throughput | (optional) |
 
-### Expected Resource Usage (optional)
-<!-- Estimate core logic resources separately from interface overhead.
-     Typical Vitis HLS interface overhead per bundle (xc7z020):
-       - AXI-Lite (s_axilite):  ~230 LUT, ~160 FF, 0 BRAM, 0 DSP
-       - AXI-Stream (axis):     ~10 LUT,  ~30 FF,  0 BRAM, 0 DSP
-       - AXI Master (m_axi):    ~600 LUT, ~500 FF, 0 BRAM, 0 DSP
-     Multiple s_axilite ports sharing one bundle = one overhead instance. -->
-
-| Resource | Core Estimate | Interface Overhead | Total Estimate |
-|----------|---------------|--------------------|----------------|
-| BRAM_18K | | | |
-| DSP      | | | |
-| FF       | | | |
-| LUT      | | | |
-
 ## 6. Test Scenarios
 <!-- Describe test cases: typical inputs, edge cases, expected outputs -->
 

@@ -1,0 +1,160 @@
+
+
+================================================================
+== Synthesis Summary Report of 'nco'
+================================================================
++ General Information: 
+    * Date:           Mon Mar 23 10:57:46 2026
+    * Version:        2025.2 (Build 6295257 on Nov 14 2025)
+    * Project:        proj_nco
+    * Solution:       sol1 (Vivado IP Flow Target)
+    * Product family: zynq
+    * Target device:  xc7z020-clg400-1
+    
+
+* Performance & Resource Estimates: 
++--------------------------+------+---------------+----------+---------+------+----------+---------+-----------+------+---------+--------+-----------+-----------+-----+
+|          Modules         | Issue|               | Iteration|         | Trip |          |       Latency       |      |         |        |           |           |     |
+|          & Loops         | Type | Violation Type|  Latency | Interval| Count| Pipelined| (cycles)|    (ns)   | Slack|  BRAM   |   DSP  |     FF    |    LUT    | URAM|
++--------------------------+------+---------------+----------+---------+------+----------+---------+-----------+------+---------+--------+-----------+-----------+-----+
+|+ nco                     |     -|              -|         -|     4103|     -|        no|     4102|  4.102e+04|  0.01|  1 (~0%)|  3 (1%)|  712 (~0%)|   944 (1%)|    -|
+| + nco_Pipeline_GEN_LOOP  |     -|              -|         -|        -|     -|       yes|     4099|  4.099e+04|  0.01|  1 (~0%)|       -|  117 (~0%)|  411 (~0%)|    -|
+|  o GEN_LOOP              |     -|              -|         3|        1|  4096|       yes|     4097|  4.097e+04|  7.30|        -|       -|          -|          -|    -|
++--------------------------+------+---------------+----------+---------+------+----------+---------+-----------+------+---------+--------+-----------+-----------+-----+
+    Name Prefix: '+' for module, 'o' for loop, '*' for dataflow
+
+
+================================================================
+== HW Interfaces
+================================================================
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 6             | 16     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+--------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| Interface     | Register     | Offset | Width | Access | Description                      | Bit Fields                                                           |
++---------------+--------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| s_axi_control | CTRL         | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 7=AUTO_RESTART 9=INTERRUPT |
+| s_axi_control | GIER         | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                             |
+| s_axi_control | IP_IER       | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN                                        |
+| s_axi_control | IP_ISR       | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST                                        |
+| s_axi_control | phase_inc    | 0x10   | 32    | W      | Data signal of phase_inc         |                                                                      |
+| s_axi_control | phase_offset | 0x18   | 32    | W      | Data signal of phase_offset      |                                                                      |
+| s_axi_control | num_samples  | 0x20   | 32    | W      | Data signal of num_samples       |                                                                      |
+| s_axi_control | sync_reset   | 0x28   | 32    | W      | Data signal of sync_reset        |                                                                      |
++---------------+--------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+
+* AXIS
++------------+-----------+---------------+-------+-------+-------+--------+-------+--------+
+| Interface  | Direction | Register Mode | TDATA | TKEEP | TLAST | TREADY | TSTRB | TVALID |
++------------+-----------+---------------+-------+-------+-------+--------+-------+--------+
+| out_stream | out       | both          | 32    | 4     | 1     | 1      | 4     | 1      |
++------------+-----------+---------------+-------+-------+-------+--------+-------+--------+
+
+* TOP LEVEL CONTROL
++-----------+------------+-----------+
+| Interface | Type       | Ports     |
++-----------+------------+-----------+
+| ap_clk    | clock      | ap_clk    |
+| ap_rst_n  | reset      | ap_rst_n  |
+| interrupt | interrupt  | interrupt |
+| ap_ctrl   | ap_ctrl_hs |           |
++-----------+------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++--------------+-----------+------------------------------------------------------------------------------+
+| Argument     | Direction | Datatype                                                                     |
++--------------+-----------+------------------------------------------------------------------------------+
+| out_stream   | out       | stream<hls::axis<ap_uint<32>, 0UL, 0UL, 0UL, (unsigned char)'8', false>, 0>& |
+| phase_inc    | in        | ap_uint<32>                                                                  |
+| phase_offset | in        | ap_uint<32>                                                                  |
+| num_samples  | in        | ap_uint<32>                                                                  |
+| sync_reset   | in        | ap_uint<1>                                                                   |
++--------------+-----------+------------------------------------------------------------------------------+
+
+* SW-to-HW Mapping
++--------------+---------------+-----------+----------------------------------------+
+| Argument     | HW Interface  | HW Type   | HW Info                                |
++--------------+---------------+-----------+----------------------------------------+
+| out_stream   | out_stream    | interface |                                        |
+| phase_inc    | s_axi_control | register  | name=phase_inc offset=0x10 range=32    |
+| phase_offset | s_axi_control | register  | name=phase_offset offset=0x18 range=32 |
+| num_samples  | s_axi_control | register  | name=num_samples offset=0x20 range=32  |
+| sync_reset   | s_axi_control | register  | name=sync_reset offset=0x28 range=32   |
++--------------+---------------+-----------+----------------------------------------+
+
+
+================================================================
+== Bind Op Report
+================================================================
++------------------------------+-----+--------+------------------+--------+----------+---------+
+| Name                         | DSP | Pragma | Variable         | Op     | Impl     | Latency |
++------------------------------+-----+--------+------------------+--------+----------+---------+
+| + nco                        | 3   |        |                  |        |          |         |
+|   select_ln184_fu_127_p3     |     |        | select_ln184     | select | auto_sel | 0       |
+|   add_ln208_fu_138_p2        |     |        | add_ln208        | add    | fabric   | 0       |
+|   icmp_ln189_fu_117_p2       |     |        | icmp_ln189       | seteq  | auto     | 0       |
+|   mul_32s_32s_32_2_1_U11     | 3   |        | mul_ln189        | mul    | auto     | 1       |
+|   add_ln189_fu_145_p2        |     |        | add_ln189        | add    | fabric   | 0       |
+|   not_icmp_ln189_1_fu_149_p2 |     |        | not_icmp_ln189_1 | xor    | auto     | 0       |
+|   phase_acc_flag_1_fu_154_p2 |     |        | phase_acc_flag_1 | or     | auto     | 0       |
+|   phase_acc_new_1_fu_159_p3  |     |        | phase_acc_new_1  | select | auto_sel | 0       |
+|  + nco_Pipeline_GEN_LOOP     | 0   |        |                  |        |          |         |
+|    icmp_ln189_fu_176_p2      |     |        | icmp_ln189       | seteq  | auto     | 0       |
+|    i_2_fu_181_p2             |     |        | i_2              | add    | fabric   | 0       |
+|    eff_phase_fu_190_p2       |     |        | eff_phase        | add    | fabric   | 0       |
+|    lut_addr_fu_211_p2        |     |        | lut_addr         | xor    | auto     | 0       |
+|    lut_addr_1_fu_217_p3      |     |        | lut_addr_1       | select | auto_sel | 0       |
+|    sub_ln157_fu_313_p2       |     |        | sub_ln157        | sub    | fabric   | 0       |
+|    sin_val_fu_319_p3         |     |        | sin_val          | select | auto_sel | 0       |
+|    phase_1_fu_261_p2         |     |        | phase_1          | add    | fabric   | 0       |
+|    lut_addr_2_fu_282_p2      |     |        | lut_addr_2       | xor    | auto     | 0       |
+|    lut_addr_3_fu_288_p3      |     |        | lut_addr_3       | select | auto_sel | 0       |
+|    cos_val_fu_330_p2         |     |        | cos_val          | sub    | fabric   | 0       |
+|    cos_val_1_fu_336_p3       |     |        | cos_val_1        | select | auto_sel | 0       |
+|    icmp_ln208_fu_237_p2      |     |        | icmp_ln208       | seteq  | auto     | 0       |
+|    add_ln215_fu_242_p2       |     |        | add_ln215        | add    | fabric   | 0       |
++------------------------------+-----+--------+------------------+--------+----------+---------+
+
+
+================================================================
+== Storage Report
+================================================================
++--------------------------+-----------+-----------+------+------+--------+------------------+------+---------+------------------+
+| Name                     | Usage     | Type      | BRAM | URAM | Pragma | Variable         | Impl | Latency | Bitwidth, Depth, |
+|                          |           |           |      |      |        |                  |      |         | Banks            |
++--------------------------+-----------+-----------+------+------+--------+------------------+------+---------+------------------+
+| + nco                    |           |           | 1    | 0    |        |                  |      |         |                  |
+|   control_s_axi_U        | interface | s_axilite |      |      |        |                  |      |         |                  |
+|  + nco_Pipeline_GEN_LOOP |           |           | 1    | 0    |        |                  |      |         |                  |
+|    QUARTER_SINE_LUT_U    | rom_2p    |           | 1    |      |        | QUARTER_SINE_LUT | auto | 1       | 15, 1024, 1      |
++--------------------------+-----------+-----------+------+------+--------+------------------+------+---------+------------------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++----------------+-----------------------------+-----------------------------------+
+| Type           | Options                     | Location                          |
++----------------+-----------------------------+-----------------------------------+
+| INLINE         |                             | in phase_to_sin (src/nco.cpp:146) |
+| INTERFACE      | axis port=out_stream        | in nco (src/nco.cpp:171)          |
+| INTERFACE      | s_axilite port=phase_inc    | in nco (src/nco.cpp:173)          |
+| INTERFACE      | s_axilite port=phase_offset | in nco (src/nco.cpp:174)          |
+| INTERFACE      | s_axilite port=num_samples  | in nco (src/nco.cpp:175)          |
+| INTERFACE      | s_axilite port=sync_reset   | in nco (src/nco.cpp:176)          |
+| INTERFACE      | s_axilite port=return       | in nco (src/nco.cpp:178)          |
+| PIPELINE       | ii=1                        | in nco (src/nco.cpp:190)          |
+| LOOP_TRIPCOUNT | min=1 max=4096 avg=256      | in nco (src/nco.cpp:191)          |
++----------------+-----------------------------+-----------------------------------+
+
+

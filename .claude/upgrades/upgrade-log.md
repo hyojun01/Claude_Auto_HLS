@@ -91,3 +91,15 @@ Entries are append-only. Never delete or modify existing entries.
 - **Approved by**: User
 - **Backup**: `.claude/upgrades/backups/hls-coding.md_20260322_window.bak`
 - **Rollback**: Remove the "`ap_axiu` / `hls::axis` types are restricted to top-level AXI-Stream ports" bullet from "### Common Pitfalls" in `.claude/rules/hls-coding.md`
+
+## [UPG-0007] Add resource estimation guidance with interface overhead reference — 2026-03-23
+- **Status**: Applied
+- **Trigger**: During `nco` design, instruction estimated <200 LUT / <100 FF (core only) but synthesis reported 944 LUT / 712 FF total. The 4-5x discrepancy was entirely from AXI-Lite interface overhead (~234 LUT, ~157 FF). Without guidance, specs systematically underestimate resources.
+- **Target**: `src/.template/instruction.md`
+- **Category**: Template update
+- **Priority**: MEDIUM
+- **Session**: nco / design-ip (review-results)
+- **Summary**: Added "Expected Resource Usage" sub-section to Target Configuration with core vs interface overhead columns and a reference table of typical Vitis HLS interface costs (AXI-Lite, AXI-Stream, AXI Master).
+- **Approved by**: User
+- **Backup**: `.claude/upgrades/backups/instruction.md_20260323_nco.bak`
+- **Rollback**: Remove "### Expected Resource Usage (optional)" sub-section (between Target Configuration table and "## 6. Test Scenarios") from `src/.template/instruction.md`
