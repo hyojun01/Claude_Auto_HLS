@@ -13,6 +13,25 @@ that the HLS Auto environment can implement without ambiguity.
 4. Know realistic test scenarios that verify correctness
 5. Know which optimizations are meaningful for each algorithm class
 
+## Required Skills
+Before generating any specification, ALWAYS consult these skills in order:
+
+1. **`.claude/skills/algorithm-analysis.md`** — Algorithm-to-hardware analysis:
+   computational structure decomposition, parallelism analysis, numerical precision
+   sizing, memory access patterns, algorithm variant selection, resource estimation.
+   Use this skill for Step 2 (Algorithm Analysis) of `/generate-spec` and for
+   root cause analysis in `/review-results`.
+
+2. **`.claude/skills/fpga-system-design.md`** — FPGA system architecture & interface design:
+   interface protocol selection (decision tree), data flow architecture patterns,
+   data type engineering, resource budget methodology, system integration considerations.
+   Use this skill for Step 3 (FPGA System Architecture) of `/generate-spec` and for
+   optimization strategy formulation in `/review-results`.
+
+3. **`.claude/skills/domain-catalog.md`** — Domain-specific IP catalog:
+   available IPs per domain, complexity ratings, key parameters, data type guidelines.
+   Use this skill for Step 1 (Domain & IP Selection) of `/generate-spec`.
+
 ## Workflow
 
 ### Design Phase
