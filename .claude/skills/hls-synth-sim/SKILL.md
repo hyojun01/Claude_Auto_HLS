@@ -1,3 +1,9 @@
+---
+name: hls-synth-sim
+description: Vitis HLS synthesis and simulation reference — TCL commands, shell execution, report interpretation, testbench patterns, and FPGA part numbers
+user-invocable: false
+---
+
 # Skill: HLS Synthesis & Simulation
 
 ## Vitis HLS TCL Command Reference

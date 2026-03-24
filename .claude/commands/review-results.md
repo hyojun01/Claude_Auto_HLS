@@ -1,3 +1,10 @@
+---
+name: review-results
+description: Review HLS synthesis and simulation results — analyzes targets vs actuals, provides engineering feedback, generates optimization proposals when needed
+argument-hint: <ip_name>
+disable-model-invocation: true
+---
+
 # /review-results — Review HLS Build Results
 
 ## Description
@@ -27,7 +34,7 @@ Reviews synthesis and simulation results from Session B, analyzes whether target
 
 ### Step 2: Engineering Analysis of Results
 **Agent**: `spec-generator-agent`
-**Skill**: `.claude/skills/algorithm-analysis.md`, `.claude/skills/fpga-system-design.md`
+**Skill**: `.claude/skills/algorithm-analysis/SKILL.md`, `.claude/skills/fpga-system-design/SKILL.md`
 - Compare actual synthesis metrics against instruction targets:
   - Timing: did estimated clock meet the target period? How much slack?
   - Latency & II: achieved vs. target, identify bottleneck loops if II > target
@@ -53,7 +60,7 @@ Reviews synthesis and simulation results from Session B, analyzes whether target
 
 ### Step 4: Generate Optimization Proposal (if needed)
 **Agent**: `spec-generator-agent`
-**Skill**: `.claude/skills/algorithm-analysis.md`, `.claude/skills/fpga-system-design.md`
+**Skill**: `.claude/skills/algorithm-analysis/SKILL.md`, `.claude/skills/fpga-system-design/SKILL.md`
 - If optimization is needed (targets not met, or significant improvement possible):
   a. Formulate an optimization strategy grounded in root cause analysis (Step 2):
      - Map each missed target to a specific optimization technique

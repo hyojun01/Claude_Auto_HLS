@@ -1,3 +1,9 @@
+---
+name: fpga-system-design
+description: FPGA system architecture and interface design methodology — AXI protocol selection, data flow patterns, data type engineering, resource budgeting, and system integration
+user-invocable: false
+---
+
 # Skill: FPGA System Architecture & Interface Design
 
 This skill provides the engineering methodology for designing the FPGA-level system architecture of an HLS IP: choosing the right interfaces, data flow patterns, data types, and integration strategy. These decisions must be made before writing the instruction.md, not improvised during implementation.
@@ -282,7 +288,7 @@ Example: 45-tap FIR, input Q1.15, coeff Q1.15:
   integer = 1 + 1 + ceil(log2(45)) = 2 + 6 = 8
   fractional = 15 + 15 = 30
   acc_total = 8 + 30 = 38 → ap_fixed<38, 8>
-  
+
   But for DSP48 efficiency (25-bit A-port):
   Consider narrowing to ap_fixed<25, 8> with 17 fractional bits
   Trade-off: 13 bits less precision vs. 1 DSP per multiply instead of 2

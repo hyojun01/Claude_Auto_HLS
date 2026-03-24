@@ -1,3 +1,9 @@
+---
+name: hls-design
+description: HLS C++ design patterns and code templates for AMD Vitis HLS IP implementation — streaming, memory-mapped, dataflow, FIR, FSM patterns and interface protocol reference
+user-invocable: false
+---
+
 # Skill: HLS C++ Design Patterns
 
 ## AMD Vitis HLS Synthesizable C++ Patterns

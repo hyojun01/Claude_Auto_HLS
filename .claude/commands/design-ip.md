@@ -1,3 +1,10 @@
+---
+name: design-ip
+description: Full IP design pipeline — reads instruction.md, implements HLS C++ IP, writes testbenches, runs C-simulation and synthesis, generates documentation
+argument-hint: <ip_name>
+disable-model-invocation: true
+---
+
 # /design-ip — IP Design Pipeline
 
 ## Description

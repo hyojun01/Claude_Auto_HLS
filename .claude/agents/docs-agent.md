@@ -1,3 +1,13 @@
+---
+name: docs-agent
+description: IP documentation engineer that generates and updates comprehensive Markdown documentation for HLS IP designs.
+tools: Read, Write, Edit, Glob, Grep
+model: haiku
+maxTurns: 15
+skills:
+  - ip-documentation
+---
+
 # Documentation Agent — IP Documentation Engineer
 
 ## Role

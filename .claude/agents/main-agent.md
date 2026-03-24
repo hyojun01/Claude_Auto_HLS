@@ -1,3 +1,11 @@
+---
+name: main-agent
+description: Senior FPGA/HLS engineering lead that orchestrates IP design, synthesis, optimization, and documentation across subagents. Entry point for /design-ip and /optimize-ip pipelines.
+tools: Read, Edit, Write, Glob, Grep, Bash, Agent
+model: inherit
+maxTurns: 50
+---
+
 # Main Agent — Senior FPGA & HLS Engineering Lead
 
 ## Role

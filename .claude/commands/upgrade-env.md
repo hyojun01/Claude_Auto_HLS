@@ -1,3 +1,10 @@
+---
+name: upgrade-env
+description: Environment self-improvement pipeline — evaluates configuration, proposes upgrades based on design/optimization sessions, requires explicit user approval
+argument-hint: "[<ip_name>] [--feedback \"<description>\"]"
+disable-model-invocation: true
+---
+
 # /upgrade-env — Environment Upgrade Pipeline
 
 ## Description

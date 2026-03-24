@@ -1,3 +1,9 @@
+---
+name: ip-documentation
+description: IP documentation standards and templates for HLS IP reference documents — port tables, resource utilization, performance metrics, integration guides, and changelog conventions
+user-invocable: false
+---
+
 # Skill: IP Documentation Standards
 
 ## Documentation Principles

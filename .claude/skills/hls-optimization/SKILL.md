@@ -1,3 +1,9 @@
+---
+name: hls-optimization
+description: HLS optimization techniques, pragma reference, and bottleneck diagnosis for AMD Vitis HLS — pipeline, unroll, dataflow, array partition, DSP/BRAM optimization patterns
+user-invocable: false
+---
+
 # Skill: HLS Optimization Techniques
 
 ## Optimization Decision Tree

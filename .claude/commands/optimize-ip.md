@@ -1,3 +1,10 @@
+---
+name: optimize-ip
+description: IP optimization pipeline — reads optimization.md, applies HLS pragmas and code restructuring, re-verifies correctness, updates documentation
+argument-hint: <ip_name>
+disable-model-invocation: true
+---
+
 # /optimize-ip — IP Optimization Pipeline
 
 ## Description

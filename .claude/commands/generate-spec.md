@@ -1,3 +1,10 @@
+---
+name: generate-spec
+description: IP specification generation pipeline — systematic algorithm analysis, FPGA architecture planning, and engineering trade-off evaluation to produce HLS-ready instruction.md
+argument-hint: <domain> [ip_name]
+disable-model-invocation: true
+---
+
 # /generate-spec — IP Specification Generation Pipeline
 
 ## Description
@@ -13,7 +20,7 @@ Generates a complete, HLS-ready IP specification (instruction.md) through system
 - `[ip_name]`: (optional) specific IP from the domain catalog
 
 ## Prerequisites
-- `.claude/skills/domain-catalog.md` must exist
+- `.claude/skills/domain-catalog/SKILL.md` must exist
 - `src/.template/instruction.md` must exist
 - `scripts/templates/mailbox/proposal.md` must exist
 
@@ -22,14 +29,14 @@ Generates a complete, HLS-ready IP specification (instruction.md) through system
 ### Step 1: Domain & IP Selection
 **Agent**: `spec-generator-agent`
 - If `ip_name` is not provided:
-  - Read `.claude/skills/domain-catalog.md`
+  - Read `.claude/skills/domain-catalog/SKILL.md`
   - Present the selected domain's IP catalog to the user
   - Ask the user to select an IP
 - If `ip_name` is provided: confirm it exists in the domain catalog
 
 ### Step 2: Algorithm Analysis
 **Agent**: `spec-generator-agent`
-**Skill**: `.claude/skills/algorithm-analysis.md`
+**Skill**: `.claude/skills/algorithm-analysis/SKILL.md`
 - Analyze the selected algorithm's computational structure:
   - Identify core operations (multiply-accumulate, butterfly, rotation, comparison, etc.)
   - Map the computational graph: data dependencies, parallelism potential, pipeline stages
@@ -43,7 +50,7 @@ Generates a complete, HLS-ready IP specification (instruction.md) through system
 
 ### Step 3: FPGA System Architecture Planning
 **Agent**: `spec-generator-agent`
-**Skill**: `.claude/skills/fpga-system-design.md`
+**Skill**: `.claude/skills/fpga-system-design/SKILL.md`
 - Select interface protocols for each port with engineering rationale:
   - Apply the interface selection decision tree (streaming vs. memory-mapped vs. register)
   - Determine data packing format for each interface

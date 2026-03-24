@@ -1,3 +1,9 @@
+---
+name: algorithm-analysis
+description: Algorithm analysis methodology for HLS implementation — computational structure, numerical precision, memory access patterns, variant selection, and resource estimation
+user-invocable: false
+---
+
 # Skill: Algorithm Analysis for HLS Implementation
 
 This skill provides the engineering methodology for analyzing algorithms before writing an IP specification. The goal is to make informed decisions about implementation architecture, data types, and performance targets — not to guess.
@@ -55,7 +61,7 @@ Questions to answer:
 If throughput target = 1 sample/cycle:
   → PIPELINE II=1 on the innermost sample loop
   → UNROLL inner computation loops (MAC, butterfly) to fit within 1 cycle
-  
+
 If throughput target = N samples/cycle:
   → UNROLL the sample loop by factor N
   → Each parallel path needs its own memory port → ARRAY_PARTITION
@@ -95,7 +101,7 @@ Examples:
   16-tap FIR, input Q1.15, coeff Q1.15:
     MAC result: 1+1 + ceil(log2(16)) = 6 integer bits
     Accumulator: ap_fixed<32, 6> minimum (16+16 total, 6 integer)
-    
+
   1024-point FFT, input Q1.15:
     Growth per stage: 1 bit (butterfly add)
     10 stages: 10 additional integer bits
@@ -186,7 +192,7 @@ When multiple implementations exist, choose based on FPGA suitability:
 ```
 For each algorithm variant, evaluate:
 1. Operations per sample → DSP / LUT cost
-2. Memory per sample → BRAM cost  
+2. Memory per sample → BRAM cost
 3. Achievable II → throughput
 4. Pipeline depth → latency
 5. Control complexity → implementation risk

@@ -1,3 +1,9 @@
+---
+name: domain-catalog
+description: FPGA application domain catalog — DSP, communications, radar, image processing, and deep learning IP building blocks with complexity ratings and data type guidelines
+user-invocable: false
+---
+
 # FPGA Application Domain Catalog
 
 ## Domain 1: Digital Signal Processing (DSP)
