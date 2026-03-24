@@ -38,7 +38,7 @@ You receive from the main agent:
 | **Rules** | `.claude/rules/*.md` | Add new coding standards, refine synthesizability rules, add naming conventions |
 | **Agent prompts** | `.claude/agents/*.md` | Refine agent responsibilities, add new checklists, improve templates |
 | **Commands** | `.claude/commands/*.md` | Add new pipeline steps, improve error handling, add conditional branches |
-| **Settings** | `.claude/settings.md` | Update defaults, add new FPGA parts, adjust tool version compatibility |
+| **Settings** | `.claude/rules/project-defaults.md` | Update defaults, add new FPGA parts, adjust tool version compatibility |
 | **Templates** | `scripts/templates/**` | Improve TCL scripts, add new C++ boilerplate patterns, refine testbench templates |
 | **CLAUDE.md** | `CLAUDE.md` | Update project overview, add new conventions, reflect structural changes |
 
